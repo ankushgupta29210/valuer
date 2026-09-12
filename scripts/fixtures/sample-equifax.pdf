@@ -1,0 +1,88 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+2 0 obj
+<< /Length 274 >>
+stream
+BT /F1 11 Tf
+1 0 0 1 60 760 Tm (SAMPLE EQUIFAX CANADA CONSUMER REPORT \(TEST DATA\)) Tj
+1 0 0 1 60 742 Tm (Report Date: August 1, 2026) Tj
+1 0 0 1 60 724 Tm (Equifax Credit Score 668) Tj
+1 0 0 1 60 706 Tm (Personal Information) Tj
+1 0 0 1 60 688 Tm (Name: Demo Client) Tj
+ET
+endstream
+endobj
+3 0 obj
+<< /Type /Page /Parent 8 0 R /MediaBox [0 0 612 792] /Contents 2 0 R /Resources << /Font << /F1 1 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 827 >>
+stream
+BT /F1 11 Tf
+1 0 0 1 60 760 Tm (Credit Accounts) Tj
+1 0 0 1 60 742 Tm (TD VISA) Tj
+1 0 0 1 60 724 Tm (Account Number: 4520XXXXXXXX4321) Tj
+1 0 0 1 60 706 Tm (Account Type: Revolving) Tj
+1 0 0 1 60 688 Tm (Status: Paid as agreed) Tj
+1 0 0 1 60 670 Tm (Balance: $2,140.55) Tj
+1 0 0 1 60 652 Tm (Credit Limit: $5,000) Tj
+1 0 0 1 60 634 Tm (Date Opened: 2019-04) Tj
+1 0 0 1 60 616 Tm (Date Reported: 2026-07) Tj
+1 0 0 1 60 598 Tm (SCOTIABANK LINE OF CREDIT) Tj
+1 0 0 1 60 580 Tm (Account Number: XXXXXXXX1188) Tj
+1 0 0 1 60 562 Tm (Account Type: Line of credit) Tj
+1 0 0 1 60 544 Tm (Status: 30 days late) Tj
+1 0 0 1 60 526 Tm (Balance: $3,900.00) Tj
+1 0 0 1 60 508 Tm (Past Due: $4,200.00) Tj
+1 0 0 1 60 490 Tm (Credit Limit: $10,000) Tj
+1 0 0 1 60 472 Tm (Date Opened: 2020-09) Tj
+1 0 0 1 60 454 Tm (Date Reported: 2026-07) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Page /Parent 8 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 1 0 R >> >> >>
+endobj
+6 0 obj
+<< /Length 365 >>
+stream
+BT /F1 11 Tf
+1 0 0 1 60 760 Tm (Collections) Tj
+1 0 0 1 60 742 Tm (CBV COLLECTION SERVICES) Tj
+1 0 0 1 60 724 Tm (Account Number: XXXX7710) Tj
+1 0 0 1 60 706 Tm (Account Type: Collection) Tj
+1 0 0 1 60 688 Tm (Status: Collection) Tj
+1 0 0 1 60 670 Tm (Balance: $640.00) Tj
+1 0 0 1 60 652 Tm (Date Opened: 2025-02) Tj
+1 0 0 1 60 634 Tm (Date Reported: 2026-07) Tj
+ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 8 0 R /MediaBox [0 0 612 792] /Contents 6 0 R /Resources << /Font << /F1 1 0 R >> >> >>
+endobj
+8 0 obj
+<< /Type /Pages /Kids [3 0 R 5 0 R 7 0 R] /Count 3 >>
+endobj
+9 0 obj
+<< /Type /Catalog /Pages 8 0 R >>
+endobj
+xref
+0 10
+0000000000 65535 f 
+0000000009 00000 n 
+0000000079 00000 n 
+0000000404 00000 n 
+0000000530 00000 n 
+0000001408 00000 n 
+0000001534 00000 n 
+0000001950 00000 n 
+0000002076 00000 n 
+0000002145 00000 n 
+trailer
+<< /Size 10 /Root 9 0 R >>
+startxref
+2194
+%%EOF

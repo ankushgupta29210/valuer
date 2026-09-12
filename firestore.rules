@@ -1,0 +1,215 @@
+rules_version = '2';
+
+// Valeur Credit — Firestore security rules (RLS equivalent).
+// Every client-owned document carries a clientId. Access is granted to the
+// owning client, to staff with an ACTIVE staffAssignments row for that
+// client, or to admins. Sensitive transitions (dispute approval, status
+// changes, activity logs, AI messages) are written only by Cloud Functions
+// through the Admin SDK, which bypasses these rules.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- helpers ----------
+    function signedIn() {
+      return request.auth != null;
+    }
+    function uid() {
+      return request.auth.uid;
+    }
+    function role() {
+      return ('role' in request.auth.token) ? request.auth.token.role : 'client';
+    }
+    function isAdmin() {
+      return signedIn() && role() == 'admin';
+    }
+    function isStaff() {
+      return signedIn() && (role() == 'advisor' || role() == 'admin');
+    }
+    function isOwner(clientId) {
+      return signedIn() && uid() == clientId;
+    }
+    function assignmentPath(clientId) {
+      return /databases/$(database)/documents/staffAssignments/$(clientId + '_' + uid());
+    }
+    function isAssignedStaff(clientId) {
+      return isStaff()
+        && exists(assignmentPath(clientId))
+        && get(assignmentPath(clientId)).data.status == 'ACTIVE';
+    }
+    function canAccessClient(clientId) {
+      return isOwner(clientId) || isAssignedStaff(clientId) || isAdmin();
+    }
+    // The clientId on a document may never be changed after creation.
+    function clientIdUnchanged() {
+      return request.resource.data.clientId == resource.data.clientId;
+    }
+    function onlyKeys(keys) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(keys);
+    }
+
+    // ---------- profiles ----------
+    match /profiles/{userId} {
+      allow read: if canAccessClient(userId);
+      allow create: if isOwner(userId)
+        && request.resource.data.email == request.auth.token.email;
+      allow update: if isOwner(userId)
+        && request.resource.data.email == resource.data.email;
+      allow delete: if false; // deletion goes through requestAccountDeletion
+    }
+
+    // ---------- staffAssignments ----------
+    match /staffAssignments/{assignmentId} {
+      allow read: if signedIn() && (
+        resource.data.clientId == uid() ||
+        resource.data.staffUid == uid() ||
+        isAdmin()
+      );
+      allow write: if isAdmin();
+    }
+
+    // ---------- creditReports ----------
+    match /creditReports/{reportId} {
+      allow read: if canAccessClient(resource.data.clientId);
+      allow create: if isOwner(request.resource.data.clientId)
+        && request.resource.data.status == 'UPLOADED'
+        && request.resource.data.bureau in ['EQUIFAX', 'TRANSUNION']
+        && request.resource.data.storagePath.matches('credit-reports/' + uid() + '/.*\\.pdf');
+      // Clients may only touch cosmetic fields; parser-owned fields are locked.
+      allow update: if canAccessClient(resource.data.clientId)
+        && clientIdUnchanged()
+        && onlyKeys(['fileName', 'updatedAt', 'reviewedAt', 'reviewedBy']);
+      allow delete: if isOwner(resource.data.clientId);
+
+      // Raw page text is stored here so list queries never return it.
+      match /pages/{pageNo} {
+        allow read: if canAccessClient(get(/databases/$(database)/documents/creditReports/$(reportId)).data.clientId);
+        allow write: if false; // parser only
+      }
+    }
+
+    // ---------- accounts ----------
+    match /accounts/{accountId} {
+      allow read: if canAccessClient(resource.data.clientId);
+      allow create: if canAccessClient(request.resource.data.clientId)
+        && request.resource.data.source == 'MANUAL'
+        && !('fullAccountNumber' in request.resource.data);
+      allow update: if canAccessClient(resource.data.clientId)
+        && clientIdUnchanged()
+        && !('fullAccountNumber' in request.resource.data);
+      allow delete: if canAccessClient(resource.data.clientId)
+        && resource.data.source == 'MANUAL';
+    }
+
+    // ---------- bills ----------
+    match /bills/{billId} {
+      allow read: if canAccessClient(resource.data.clientId);
+      allow create: if canAccessClient(request.resource.data.clientId);
+      allow update: if canAccessClient(resource.data.clientId) && clientIdUnchanged();
+      allow delete: if canAccessClient(resource.data.clientId);
+    }
+
+    // ---------- creditIssues ----------
+    match /creditIssues/{issueId} {
+      allow read: if canAccessClient(resource.data.clientId);
+      // Clients can add their own concerns; detected issues come from the parser.
+      allow create: if canAccessClient(request.resource.data.clientId)
+        && request.resource.data.status == 'OPEN'
+        && request.resource.data.origin == 'CLIENT';
+      // Status transitions go through updateIssueStatus (audited). Clients may
+      // only edit notes/evidence here.
+      allow update: if canAccessClient(resource.data.clientId)
+        && clientIdUnchanged()
+        && onlyKeys(['evidenceNotes', 'updatedAt']);
+      allow delete: if false;
+    }
+
+    // ---------- disputes / disputeItems ----------
+    match /disputes/{disputeId} {
+      allow read: if canAccessClient(resource.data.clientId);
+      allow write: if false; // created and transitioned only by Functions
+    }
+    match /disputeItems/{itemId} {
+      allow read: if canAccessClient(resource.data.clientId);
+      allow write: if false;
+    }
+
+    // ---------- settlements ----------
+    match /settlements/{settlementId} {
+      allow read: if canAccessClient(resource.data.clientId);
+      allow write: if false; // upsertSettlement so money validation + audit always run
+    }
+
+    // ---------- letters ----------
+    match /letters/{letterId} {
+      allow read: if canAccessClient(resource.data.clientId);
+      allow write: if false; // generateLetter / approve / markSent
+    }
+
+    // ---------- agencyContacts (recipient directory) ----------
+    match /agencyContacts/{contactId} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+
+    // ---------- advisorNotes ----------
+    match /advisorNotes/{noteId} {
+      allow read: if signedIn() && (
+        isAssignedStaff(resource.data.clientId) || isAdmin() ||
+        (isOwner(resource.data.clientId) && resource.data.visibility == 'CLIENT_VISIBLE')
+      );
+      allow create: if (isAssignedStaff(request.resource.data.clientId) || isAdmin())
+        && request.resource.data.authorId == uid();
+      allow update: if (isAssignedStaff(resource.data.clientId) || isAdmin())
+        && resource.data.authorId == uid()
+        && clientIdUnchanged();
+      allow delete: if isAdmin();
+    }
+
+    // ---------- aiMessages ----------
+    match /aiMessages/{messageId} {
+      allow read: if canAccessClient(resource.data.clientId);
+      allow write: if false; // aiCoach function only
+    }
+
+    // ---------- activityLogs (immutable) ----------
+    match /activityLogs/{logId} {
+      allow read: if canAccessClient(resource.data.clientId);
+      allow write: if false;
+    }
+
+    // ---------- settings ----------
+    match /settings/{docId} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+
+    // ---------- dataRequests ----------
+    match /dataRequests/{requestId} {
+      allow read: if canAccessClient(resource.data.clientId) ;
+      allow write: if false; // requestDataExport / requestAccountDeletion
+    }
+
+    // ---------- actionPlans ----------
+    match /actionPlans/{planId} {
+      allow read: if canAccessClient(resource.data.clientId);
+      allow create: if canAccessClient(request.resource.data.clientId);
+      allow update: if canAccessClient(resource.data.clientId) && clientIdUnchanged();
+      allow delete: if canAccessClient(resource.data.clientId);
+    }
+
+    // ---------- rateLimits (server only) ----------
+    match /rateLimits/{key} {
+      allow read, write: if false;
+    }
+
+    // ---------- users directory (admin) ----------
+    match /users/{userId} {
+      allow read: if isAdmin() || isOwner(userId);
+      allow write: if false; // setUserRole
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "valeur",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/web",
+    "packages/shared",
+    "functions"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w apps/web",
+    "build": "npm run build -w packages/shared && npm run build -w functions && npm run build -w apps/web",
+    "test": "npm run test -w packages/shared",
+    "emulators": "cross-env FUNCTIONS_DISCOVERY_TIMEOUT=60000 firebase emulators:start --project valeur-credit --import=./emulator-data --export-on-exit",
+    "seed": "node scripts/seed.mjs",
+    "deploy": "npm run build && firebase deploy",
+    "emulators:clean": "cross-env FUNCTIONS_DISCOVERY_TIMEOUT=60000 firebase emulators:start --project valeur-credit"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3"
+  }
+}

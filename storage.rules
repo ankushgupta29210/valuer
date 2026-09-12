@@ -1,0 +1,70 @@
+rules_version = '2';
+
+// Valeur Credit — Storage rules. Every path is private.
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function signedIn() { return request.auth != null; }
+    function uid() { return request.auth.uid; }
+    function role() {
+      return ('role' in request.auth.token) ? request.auth.token.role : 'client';
+    }
+    function isAdmin() { return signedIn() && role() == 'admin'; }
+    function isStaff() { return signedIn() && (role() == 'advisor' || role() == 'admin'); }
+    function isOwner(clientId) { return signedIn() && uid() == clientId; }
+    function assignmentPath(clientId) {
+      return /databases/(default)/documents/staffAssignments/$(clientId + '_' + uid());
+    }
+    function isAssignedStaff(clientId) {
+      return isStaff()
+        && firestore.exists(assignmentPath(clientId))
+        && firestore.get(assignmentPath(clientId)).data.status == 'ACTIVE';
+    }
+    function canAccessClient(clientId) {
+      return isOwner(clientId) || isAssignedStaff(clientId) || isAdmin();
+    }
+    function isPdf() {
+      return request.resource.contentType == 'application/pdf';
+    }
+    function isPdfOrImage() {
+      return request.resource.contentType.matches('application/pdf|image/(png|jpeg)');
+    }
+    // 15 MB hard ceiling; the app also enforces settings.maxUploadBytes.
+    function underLimit() {
+      return request.resource.size < 15 * 1024 * 1024;
+    }
+
+    // Original credit report PDFs.
+    match /credit-reports/{clientId}/{fileName} {
+      allow read: if canAccessClient(clientId);
+      allow create: if isOwner(clientId) && isPdf() && underLimit() && fileName.matches('.*[.]pdf');
+      allow update: if false;
+      allow delete: if isOwner(clientId) || isAdmin();
+    }
+
+    // Bureau/creditor responses and supporting evidence.
+    match /dispute-responses/{clientId}/{disputeId}/{fileName} {
+      allow read: if canAccessClient(clientId);
+      allow create: if canAccessClient(clientId) && isPdfOrImage() && underLimit();
+      allow update: if false;
+      allow delete: if isOwner(clientId) || isAdmin();
+    }
+
+    match /settlement-confirmations/{clientId}/{settlementId}/{fileName} {
+      allow read: if canAccessClient(clientId);
+      allow create: if canAccessClient(clientId) && isPdfOrImage() && underLimit();
+      allow update: if false;
+      allow delete: if isOwner(clientId) || isAdmin();
+    }
+
+    // Generated exports, written by Functions only.
+    match /exports/{clientId}/{fileName} {
+      allow read: if isOwner(clientId) || isAdmin();
+      allow write: if false;
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
