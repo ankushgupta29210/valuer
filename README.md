@@ -15,6 +15,16 @@ See [TECHNICAL_PLANNING.md](TECHNICAL_PLANNING.md) for the stack, data model, se
 - **Shared** — Zod schemas, enums, rule engine, bureau comparison, redaction, letter templates (`packages/shared`), unit-tested with Vitest
 - **AI coach** — Gemini (`2.5-pro` → `2.5-flash` → `2.0-flash`) with Anthropic Claude fallback, server-side only
 
+## Demo mode (no Firebase)
+
+A client-facing preview that runs entirely in the browser: sample data in `localStorage`, simulated report parsing, canned assistant answers, and quick-login buttons for client / advisor / admin. Nothing is sent anywhere.
+
+- Live: **https://ankushgupta29210.github.io/valuer/** (deployed by `.github/workflows/demo-pages.yml` on every push to `main`)
+- Locally: `npm run dev:demo -w apps/web` → http://localhost:5173
+- Build: `npm run build:demo -w apps/web` (sets `VITE_DEMO_MODE=true` and `VITE_BASE=/valuer/`)
+
+Demo mode is switched by `VITE_DEMO_MODE` (see `apps/web/.env.demo`). The switch lives in three files — `lib/auth.tsx`, `lib/data.ts`, `lib/callables.ts` — everything under `lib/demo/` is the in-browser implementation. To go live, build without that flag against a real Firebase project; the demo code is tree-shaken out.
+
 ## Local development
 
 Prerequisites: Node 20+, Java 17+ (for the Firestore/Storage emulators), Firebase CLI (`npm i -g firebase-tools`).

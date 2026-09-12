@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { where, limit } from 'firebase/firestore';
+import { where, limit } from '@/lib/query';
 import { Users } from 'lucide-react';
 import type { ActivityLog, AdvisorNote, CreditIssue, CreditReport, Dispute, Letter, Profile, StaffAssignment, Bill } from '@valeur/shared';
 import { useAuth } from '@/lib/auth';

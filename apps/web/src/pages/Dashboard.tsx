@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { where, limit } from 'firebase/firestore';
+import { where, limit } from '@/lib/query';
 import { ArrowRight, FileUp, Stethoscope, GitCompare, ClipboardList, Mail } from 'lucide-react';
 import type { ActivityLog, CreditIssue, CreditReport, Dispute, Settlement, ActionPlan, Bill } from '@valeur/shared';
 import { useClientContext } from '@/lib/clientContext';

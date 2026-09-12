@@ -1,12 +1,10 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { where } from 'firebase/firestore';
-import { ref as storageRef, uploadBytes } from 'firebase/storage';
+import { where } from '@/lib/query';
 import { ArrowLeft, Download, Printer, RefreshCw } from 'lucide-react';
 import { DELIVERY_METHODS, DISPUTE_APPROVAL_STATEMENT, DISPUTE_TRANSITIONS, DISPUTE_STATUS_LABEL, REQUESTED_ACTION_TEXT, type Account, type CreditIssue, type Dispute, type DisputeItem, type DisputeStatus, type Letter } from '@valeur/shared';
-import { storage } from '@/lib/firebase';
 import { useClientContext } from '@/lib/clientContext';
-import { useCollection, useDoc } from '@/lib/data';
+import { useCollection, useDoc, uploadDisputeResponse } from '@/lib/data';
 import { api, CallableError } from '@/lib/callables';
 import { fmtDate, fmtDateTime } from '@/lib/format';
 import { Alert, Button, Card, CardBody, CardHeader, Checkbox, Input, LoadingBlock, Select, Textarea, toast } from '@/components/ui';
@@ -52,8 +50,7 @@ export default function DisputeDetailPage() {
     if (!nextStatus) return;
     let responseFilePath: string | undefined;
     if (nextStatus === 'RESPONSE_RECEIVED' && responseFile) {
-      responseFilePath = `dispute-responses/${d.clientId}/${d.id}/${Date.now()}-${responseFile.name}`;
-      await uploadBytes(storageRef(storage, responseFilePath), responseFile, { contentType: responseFile.type });
+      responseFilePath = await uploadDisputeResponse(d.clientId, d.id, responseFile);
     }
     await run(() => api.updateDisputeStatus({ disputeId: d.id, status: nextStatus, responseSummary: summary || undefined, responseFilePath }), `Marked ${DISPUTE_STATUS_LABEL[nextStatus].toLowerCase()}.`);
     setNextStatus('');

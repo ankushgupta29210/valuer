@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { limit } from 'firebase/firestore';
+import { limit } from '@/lib/query';
 import { MessageCircle, Send } from 'lucide-react';
 import type { AiMessage } from '@valeur/shared';
 import { useAuth } from '@/lib/auth';

@@ -87,7 +87,7 @@ export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputE
   const fid = id ?? auto;
   return (
     <FieldWrap id={fid} label={label} hint={hint} error={error} required={required} className={className}>
-      <input ref={ref} id={fid} className={cn(fieldBase, error && 'border-red-400 focus:ring-red-200')} aria-invalid={!!error} {...props} />
+      <input ref={ref} id={fid} required={required} className={cn(fieldBase, error && 'border-red-400 focus:ring-red-200')} aria-invalid={!!error} {...props} />
     </FieldWrap>
   );
 });
@@ -98,7 +98,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaHTMLAttributes<H
   const fid = id ?? auto;
   return (
     <FieldWrap id={fid} label={label} hint={hint} error={error} required={required} className={className}>
-      <textarea ref={ref} id={fid} className={cn(fieldBase, 'min-h-[88px]', error && 'border-red-400')} aria-invalid={!!error} {...props} />
+      <textarea ref={ref} id={fid} required={required} className={cn(fieldBase, 'min-h-[88px]', error && 'border-red-400')} aria-invalid={!!error} {...props} />
     </FieldWrap>
   );
 });
@@ -110,7 +110,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectHTMLAttributes<HTMLSel
     const fid = id ?? auto;
     return (
       <FieldWrap id={fid} label={label} hint={hint} error={error} required={required} className={className}>
-        <select ref={ref} id={fid} className={cn(fieldBase, error && 'border-red-400')} aria-invalid={!!error} {...props}>
+        <select ref={ref} id={fid} required={required} className={cn(fieldBase, error && 'border-red-400')} aria-invalid={!!error} {...props}>
           {placeholder && <option value="">{placeholder}</option>}
           {options.map((o) => (
             <option key={o.value} value={o.value}>

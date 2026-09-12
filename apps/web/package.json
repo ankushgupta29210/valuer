@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc -b"
+    "typecheck": "tsc -b",
+    "build:demo": "cross-env VITE_DEMO_MODE=true VITE_BASE=/valuer/ vite build --mode demo && node scripts/pages-404.mjs",
+    "dev:demo": "vite --mode demo"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
@@ -31,6 +33,7 @@
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.16",
     "typescript": "^5.6.3",
-    "vite": "^6.0.3"
+    "vite": "^6.0.3",
+    "cross-env": "^7.0.3"
   }
 }

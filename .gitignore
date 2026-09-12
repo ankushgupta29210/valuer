@@ -3,6 +3,7 @@ dist/
 lib/
 .env
 .env.local
+!apps/web/.env.demo
 *.log
 emulator-data/
 .firebase/
@@ -15,3 +16,4 @@ functions/.env*
 apps/web/.env.local
 *-debug.log
 scripts/_*.mjs
+apps/web/tsconfig.tsbuildinfo

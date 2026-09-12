@@ -1,10 +1,9 @@
 import { useEffect, useState, type FormEvent } from 'react';
-import { doc, setDoc, deleteDoc, serverTimestamp, orderBy } from 'firebase/firestore';
+import { orderBy } from '@/lib/query';
 import { Plus, Trash2 } from 'lucide-react';
 import { CONTACT_KINDS, DEFAULT_SETTINGS, ROLES, agencyContactSchema, settingsSchema, type AgencyContact, type Role, type StaffAssignment, type Settings } from '@valeur/shared';
-import { db } from '@/lib/firebase';
 import { useAuth } from '@/lib/auth';
-import { useAgencyContacts, useCollection, useDoc } from '@/lib/data';
+import { useAgencyContacts, useCollection, useDoc, saveAgencyContact, deleteAgencyContact, saveSettings } from '@/lib/data';
 import { api, CallableError } from '@/lib/callables';
 import { fmtDate } from '@/lib/format';
 import { Alert, Badge, Button, Card, CardBody, CardHeader, Checkbox, Dialog, EmptyState, Input, LoadingBlock, PageHeader, Select, Textarea, toast } from '@/components/ui';
@@ -176,8 +175,8 @@ function ContactEditor({ contact, onClose }: { contact: AgencyContact | null; on
     }
     setBusy(true);
     try {
-      const ref = contact ? doc(db, 'agencyContacts', contact.id) : doc(db, 'agencyContacts', `${parsed.data.kind}_${(parsed.data.bureau ?? parsed.data.name).toLowerCase().replace(/[^a-z0-9]+/g, '-')}`);
-      await setDoc(ref, { ...parsed.data, updatedAt: serverTimestamp(), ...(contact ? {} : { createdAt: serverTimestamp() }) }, { merge: true });
+      const id = contact ? contact.id : `${parsed.data.kind}_${(parsed.data.bureau ?? parsed.data.name).toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+      await saveAgencyContact(id, parsed.data, !contact);
       toast.success('Recipient saved.');
       onClose();
     } catch {
@@ -188,7 +187,7 @@ function ContactEditor({ contact, onClose }: { contact: AgencyContact | null; on
   }
 
   return (
-    <Dialog open onClose={onClose} title={contact ? 'Edit recipient' : 'Add recipient'} size="lg" footer={<>{contact && <Button variant="ghost" className="mr-auto text-red-700" onClick={async () => { await deleteDoc(doc(db, 'agencyContacts', contact.id)); onClose(); }}><Trash2 className="h-4 w-4" /> Delete</Button>}<Button variant="ghost" onClick={onClose}>Cancel</Button><Button form="contact-form" type="submit" loading={busy}>Save</Button></>}>
+    <Dialog open onClose={onClose} title={contact ? 'Edit recipient' : 'Add recipient'} size="lg" footer={<>{contact && <Button variant="ghost" className="mr-auto text-red-700" onClick={async () => { await deleteAgencyContact(contact.id); onClose(); }}><Trash2 className="h-4 w-4" /> Delete</Button>}<Button variant="ghost" onClick={onClose}>Cancel</Button><Button form="contact-form" type="submit" loading={busy}>Save</Button></>}>
       <form id="contact-form" onSubmit={onSubmit} className="space-y-4">
         <div className="grid gap-4 sm:grid-cols-2">
           <Select label="Kind" options={CONTACT_KINDS.map((k) => ({ value: k, label: k.toLowerCase().replace('_', ' ') }))} value={form.kind} onChange={set('kind')} />
@@ -222,7 +221,7 @@ function SettingsTab() {
     if (!parsed.success) return toast.error('Check the values — all must be positive numbers.');
     setBusy(true);
     try {
-      await setDoc(doc(db, 'settings', 'global'), { ...parsed.data, updatedAt: serverTimestamp() }, { merge: true });
+      await saveSettings(parsed.data);
       toast.success('Settings saved.');
     } catch {
       toast.error('Could not save settings.');

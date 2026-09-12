@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react';
-import { where } from 'firebase/firestore';
+import { where } from '@/lib/query';
 import { profileUpdateSchema, type DataRequest } from '@valeur/shared';
 import { useAuth } from '@/lib/auth';
 import { saveProfile, useClientCollection } from '@/lib/data';

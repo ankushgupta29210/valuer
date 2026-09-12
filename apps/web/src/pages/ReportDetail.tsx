@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { where, orderBy } from 'firebase/firestore';
+import { where, orderBy } from '@/lib/query';
 import { ArrowLeft, Download, FileText } from 'lucide-react';
 import type { Account, CreditIssue, CreditReport } from '@valeur/shared';
 import { useDoc, useCollection } from '@/lib/data';

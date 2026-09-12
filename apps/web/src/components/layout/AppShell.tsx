@@ -1,11 +1,11 @@
 import { useState, type ReactNode } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { signOut } from 'firebase/auth';
 import {
   LayoutDashboard, CreditCard, Receipt, FileUp, GitCompare, Stethoscope, ClipboardList, Mail, MessageCircle, Settings, Users, Shield, Menu, X, LogOut,
 } from 'lucide-react';
-import { auth } from '@/lib/firebase';
-import { useAuth } from '@/lib/auth';
+import { useAuth, authActions, isDemo } from '@/lib/auth';
+import { seedDemoData } from '@/lib/demo/seed';
+import { toast } from '@/components/ui';
 import { cn } from '@/lib/format';
 import { useClientContext } from '@/lib/clientContext';
 
@@ -72,7 +72,7 @@ export function AppShell() {
         <p className="text-xs capitalize text-slate-500">{role}</p>
         <button
           onClick={async () => {
-            await signOut(auth);
+            await authActions.signOut();
             navigate('/login');
           }}
           className="mt-2 flex items-center gap-2 text-xs text-slate-500 hover:text-slate-800"
@@ -98,6 +98,24 @@ export function AppShell() {
         </div>
       )}
       <div className="flex min-w-0 flex-1 flex-col">
+        {isDemo && (
+          <div className="flex flex-wrap items-center justify-between gap-2 bg-slate-900 px-4 py-1.5 text-xs text-slate-200 lg:px-8">
+            <span>
+              <strong className="text-white">Demo mode</strong> — sample data stored only in this browser. No Firebase, no real bureau data, nothing is sent anywhere.
+            </span>
+            <span className="flex items-center gap-2">
+              <span className="text-slate-400">Switch user:</span>
+              {(['client', 'advisor', 'admin'] as const).map((k) => (
+                <button key={k} className={cn('rounded px-2 py-0.5 capitalize hover:bg-slate-700', role === k && 'bg-slate-700 text-white')} onClick={() => { authActions.demoQuickLogin(k); clear(); navigate('/'); }}>
+                  {k}
+                </button>
+              ))}
+              <button className="rounded px-2 py-0.5 text-amber-300 hover:bg-slate-700" onClick={() => { seedDemoData(); clear(); toast.success('Demo data reset.'); navigate('/'); }}>
+                Reset data
+              </button>
+            </span>
+          </div>
+        )}
         <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-slate-200 bg-white/90 px-4 backdrop-blur lg:hidden">
           <button onClick={() => setOpen(true)} className="rounded-md p-1.5 text-slate-600 hover:bg-slate-100" aria-label="Open menu">
             <Menu className="h-5 w-5" />

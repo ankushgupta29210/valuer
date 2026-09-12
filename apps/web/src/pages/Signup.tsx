@@ -1,7 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { authActions } from '@/lib/auth';
 import { Alert, Button, Checkbox, Input } from '@/components/ui';
 import { AuthLayout, friendlyAuthError } from './AuthLayout';
 
@@ -27,11 +26,7 @@ export default function SignupPage() {
     setBusy(true);
     setError(null);
     try {
-      const cred = await createUserWithEmailAndPassword(auth, email.trim(), password);
-      await updateProfile(cred.user, { displayName: fullName.trim() });
-      // Custom claims are set by the beforeUserCreated hook; refresh so the
-      // role is present on the first token.
-      await cred.user.getIdToken(true);
+      await authActions.signUp(email, password, fullName.trim());
       navigate('/onboarding', { replace: true, state: { fullName: fullName.trim(), consent: true } });
     } catch (err) {
       setError(friendlyAuthError(err));

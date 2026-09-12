@@ -1,7 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { sendPasswordResetEmail } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { authActions } from '@/lib/auth';
 import { Alert, Button, Input } from '@/components/ui';
 import { AuthLayout, friendlyAuthError } from './AuthLayout';
 
@@ -16,7 +15,7 @@ export default function ForgotPasswordPage() {
     setBusy(true);
     setError(null);
     try {
-      await sendPasswordResetEmail(auth, email.trim());
+      await authActions.resetPassword(email);
       setSent(true);
     } catch (err) {
       // Do not reveal whether the email exists.

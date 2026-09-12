@@ -1,7 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { authActions, isDemo } from '@/lib/auth';
 import { Alert, Button, Input } from '@/components/ui';
 import { AuthLayout, friendlyAuthError } from './AuthLayout';
 
@@ -18,7 +17,7 @@ export default function LoginPage() {
     setBusy(true);
     setError(null);
     try {
-      await signInWithEmailAndPassword(auth, email.trim(), password);
+      await authActions.signIn(email, password);
       const from = (location.state as { from?: { pathname: string } } | null)?.from?.pathname ?? '/';
       navigate(from, { replace: true });
     } catch (err) {
@@ -42,6 +41,19 @@ export default function LoginPage() {
           <Link to="/signup">Create an account</Link>
         </div>
       </form>
+      {isDemo && (
+        <div className="mt-6 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm">
+          <p className="font-medium text-amber-900">Demo mode</p>
+          <p className="mt-0.5 text-xs text-amber-800">Sample data only, stored in this browser. Jump straight in as:</p>
+          <div className="mt-3 grid grid-cols-3 gap-2">
+            {(['client', 'advisor', 'admin'] as const).map((k) => (
+              <Button key={k} variant="outline" size="sm" type="button" onClick={() => { authActions.demoQuickLogin(k); navigate('/', { replace: true }); }} className="capitalize">
+                {k}
+              </Button>
+            ))}
+          </div>
+        </div>
+      )}
     </AuthLayout>
   );
 }
