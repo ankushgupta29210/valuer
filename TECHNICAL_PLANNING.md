@@ -195,6 +195,6 @@ Going live: create the Firebase project, fill `apps/web/.env.local` with `VITE_U
 
 - **Blaze plan** required to deploy Functions. Everything runs on the emulator until then.
 - **OCR** for image-only PDFs: status is set to `OCR_REQUIRED`; actual OCR (Document AI / Tesseract) is phase 2.
-- **Malware scanning**: hook point left in `parseCreditReport`; not implemented in MVP.
+- **Malware scanning**: hook point left in `parseCreditReport`; not implemented in  MVP.
 - **Email notifications**: notification preferences stored; sending is phase 2.
 - **Bureau addresses** are seeded as placeholders in `agencyContacts` with `lastVerifiedAt: null` — an admin must verify and update them before launch.
