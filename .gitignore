@@ -17,3 +17,4 @@ apps/web/.env.local
 *-debug.log
 scripts/_*.mjs
 apps/web/tsconfig.tsbuildinfo
+docs/

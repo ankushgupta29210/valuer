@@ -5,9 +5,10 @@ export default {
     extend: {
       colors: {
         brand: {
-          50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd', 400: '#60a5fa',
-          500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 800: '#1e40af', 900: '#1e3a8a', 950: '#172554',
+          50: '#eef6f6', 100: '#d5eae9', 200: '#aed6d4', 300: '#7dbcbb', 400: '#4f9d9f',
+          500: '#357f85', 600: '#2a666f', 700: '#25525c', 800: '#1f3f4c', 900: '#182c40', 950: '#0f1c2b',
         },
+        accent: { 400: '#5fb58c', 500: '#3f9a75', 600: '#2f7d60' },
       },
       fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'] },
       boxShadow: { card: '0 1px 2px rgba(16, 24, 40, 0.05), 0 1px 3px rgba(16, 24, 40, 0.06)' },

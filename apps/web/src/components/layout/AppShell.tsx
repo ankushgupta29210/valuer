@@ -43,12 +43,10 @@ export function AppShell() {
   const Sidebar = (
     <nav className="flex h-full flex-col">
       <div className="flex items-center gap-2 px-5 py-5">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-700 text-white">
-          <svg viewBox="0 0 32 32" className="h-5 w-5"><path d="M8 9l8 14 8-14" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
-        </div>
+        <img src={`${import.meta.env.BASE_URL}valeur-mark.png`} alt="" className="h-9 w-9 rounded-md" />
         <div>
-          <p className="text-sm font-semibold text-slate-900">Valeur Credit</p>
-          <p className="text-[11px] text-slate-500">Diagnose → Compare → Plan → Track</p>
+          <p className="text-sm font-semibold tracking-wide text-brand-900">VALEUR</p>
+          <p className="text-[11px] text-slate-500">Understand. Resolve. Rebuild.</p>
         </div>
       </div>
       <ul className="flex-1 space-y-0.5 px-3">
@@ -120,7 +118,7 @@ export function AppShell() {
           <button onClick={() => setOpen(true)} className="rounded-md p-1.5 text-slate-600 hover:bg-slate-100" aria-label="Open menu">
             <Menu className="h-5 w-5" />
           </button>
-          <span className="text-sm font-semibold">Valeur Credit</span>
+          <img src={`${import.meta.env.BASE_URL}valeur-mark.png`} alt="" className="h-7 w-7" /><span className="text-sm font-semibold tracking-wide text-brand-900">VALEUR</span>
         </header>
         {viewingOther && (
           <div className="flex flex-wrap items-center justify-between gap-2 bg-amber-50 px-4 py-2 text-sm text-amber-900 lg:px-8">
