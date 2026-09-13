@@ -151,9 +151,11 @@ Comparison (client-side, shared package): `SAME_CREDITOR`, `MISSING_TRADELINE`, 
 
 Provider chain, tried in order until one succeeds:
 
-1. Gemini `gemini-2.5-pro`
-2. Gemini `gemini-2.5-flash` (different model, so a single-model outage doesn't take the assistant down)
-3. Gemini `gemini-2.0-flash`
+1. Gemini `gemini-2.5-flash`
+2. Gemini `gemini-flash-latest` (different model, so a single-model outage doesn't take the assistant down)
+3. Gemini `gemini-3.5-flash`
+
+Order is configurable with the `GEMINI_MODELS` env var. Pro-tier models need a paid Google AI plan; the free tier returns 429 for them.
 4. Anthropic Claude `claude-opus-5` — only if `ANTHROPIC_API_KEY` secret is set
 
 Per call: redact account numbers / tokens / unnecessary PII → per-user rate limit → attach report/account context **only** if `profile.aiDataConsent` is true → system prompt with product boundaries → provider chain → log to `aiMessages` with `provider`, `model`, `safetyFlags`.

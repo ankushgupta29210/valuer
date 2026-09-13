@@ -13,7 +13,7 @@ See [TECHNICAL_PLANNING.md](TECHNICAL_PLANNING.md) for the stack, data model, se
 - **Web** — Vite + React 18 + TypeScript, Tailwind, React Router (`apps/web`)
 - **Backend** — Firebase: Auth (custom-claim roles), Firestore (security rules as RLS), Storage (private buckets), Cloud Functions v2 (`functions`)
 - **Shared** — Zod schemas, enums, rule engine, bureau comparison, redaction, letter templates (`packages/shared`), unit-tested with Vitest
-- **AI coach** — Gemini (`2.5-pro` → `2.5-flash` → `2.0-flash`) with Anthropic Claude fallback, server-side only
+- **AI coach** — Gemini (`2.5-flash` → `flash-latest` → `3.5-flash`, configurable via `GEMINI_MODELS`) with Anthropic Claude fallback, server-side only
 
 ## Demo mode (no Firebase)
 

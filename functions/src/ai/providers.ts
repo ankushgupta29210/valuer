@@ -24,7 +24,7 @@ export interface ProviderAttempt {
   error: string;
 }
 
-const DEFAULT_GEMINI_MODELS = ['gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash'];
+const DEFAULT_GEMINI_MODELS = ['gemini-2.5-flash', 'gemini-flash-latest', 'gemini-3.5-flash'];
 const DEFAULT_ANTHROPIC_MODEL = 'claude-opus-5';
 const MAX_OUTPUT_TOKENS = 1500;
 
