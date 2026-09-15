@@ -3,10 +3,11 @@ import { AlertCircle, CheckCircle2, Info, Loader2, X } from 'lucide-react';
 import { cn } from '@/lib/format';
 
 // ---------- Button ----------
-type Variant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'outline';
+type Variant = 'primary' | 'accent' | 'secondary' | 'ghost' | 'danger' | 'outline';
 type Size = 'sm' | 'md' | 'lg';
 const variantCls: Record<Variant, string> = {
   primary: 'bg-brand-700 text-white hover:bg-brand-800 focus-visible:ring-brand-500 shadow-sm',
+  accent: 'bg-accent-500 text-brand-950 hover:bg-accent-400 focus-visible:ring-accent-600 shadow-sm',
   secondary: 'bg-brand-50 text-brand-800 hover:bg-brand-100 focus-visible:ring-brand-400',
   outline: 'border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 focus-visible:ring-brand-400',
   ghost: 'text-slate-600 hover:bg-slate-100 focus-visible:ring-brand-400',
@@ -39,13 +40,13 @@ Button.displayName = 'Button';
 
 // ---------- Card ----------
 export function Card({ className, children }: { className?: string; children: ReactNode }) {
-  return <div className={cn('min-w-0 rounded-xl border border-slate-200 bg-white shadow-card', className)}>{children}</div>;
+  return <div className={cn('min-w-0 rounded-xl border border-slate-200 bg-white shadow-panel', className)}>{children}</div>;
 }
 export function CardHeader({ title, description, action, className }: { title: ReactNode; description?: ReactNode; action?: ReactNode; className?: string }) {
   return (
     <div className={cn('flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 px-5 py-4', className)}>
       <div>
-        <h2 className="text-base font-semibold text-slate-900">{title}</h2>
+        <h2 className="font-display text-base font-semibold text-slate-900">{title}</h2>
         {description && <p className="mt-0.5 text-sm text-slate-500">{description}</p>}
       </div>
       {action}
@@ -195,7 +196,7 @@ export function EmptyState({ icon, title, description, action }: { icon?: ReactN
   return (
     <div className="flex flex-col items-center justify-center px-6 py-12 text-center">
       {icon && <div className="mb-3 rounded-full bg-brand-50 p-3 text-brand-700">{icon}</div>}
-      <p className="text-base font-medium text-slate-900">{title}</p>
+      <p className="font-display text-base font-medium text-slate-900">{title}</p>
       {description && <p className="mt-1 max-w-md text-sm text-slate-500">{description}</p>}
       {action && <div className="mt-4">{action}</div>}
     </div>
@@ -217,10 +218,10 @@ export function Dialog({ open, onClose, title, children, footer, size = 'md' }: 
   if (!open) return null;
   const w = { md: 'max-w-lg', lg: 'max-w-2xl', xl: 'max-w-4xl' }[size];
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-900/40 p-0 sm:items-center sm:p-4" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-forest-deep/50 p-0 sm:items-center sm:p-4" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
       <div role="dialog" aria-modal className={cn('flex max-h-[95vh] w-full flex-col rounded-t-2xl bg-white shadow-xl sm:rounded-2xl', w)}>
         <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
-          <h2 className="text-base font-semibold">{title}</h2>
+          <h2 className="font-display text-base font-semibold">{title}</h2>
           <button onClick={onClose} className="rounded-md p-1 text-slate-500 hover:bg-slate-100" aria-label="Close">
             <X className="h-5 w-5" />
           </button>
@@ -285,7 +286,7 @@ export function Stat({ label, value, sub }: { label: ReactNode; value: ReactNode
   return (
     <div>
       <p className="text-xs font-medium uppercase tracking-wide text-slate-500">{label}</p>
-      <p className="mt-0.5 text-lg font-semibold text-slate-900">{value}</p>
+      <p className="mt-0.5 font-display text-lg font-semibold text-slate-900">{value}</p>
       {sub && <p className="text-xs text-slate-500">{sub}</p>}
     </div>
   );

@@ -3,9 +3,114 @@
 @tailwind utilities;
 
 @layer base {
-  html { @apply text-slate-800 antialiased; }
-  body { @apply bg-slate-50 min-h-screen; }
-  h1 { @apply text-2xl font-semibold tracking-tight text-slate-900; }
-  h2 { @apply text-lg font-semibold text-slate-900; }
-  a { @apply text-brand-700; }
+  html {
+    @apply font-sans text-slate-800 antialiased;
+  }
+  body {
+    @apply min-h-screen bg-slate-50;
+  }
+  /* Fraunces carries the headings, Karla the UI — as on valeurcredit.com. */
+  h1 {
+    @apply font-display text-2xl font-semibold tracking-tight text-slate-900;
+  }
+  h2 {
+    @apply font-display text-lg font-semibold text-slate-900;
+  }
+  h3 {
+    @apply font-display font-semibold text-slate-900;
+  }
+  a {
+    @apply text-brand-700;
+  }
+  /* Optical sizing so Fraunces sets display-weight at large sizes. */
+  .font-display {
+    font-variation-settings: 'opsz' 96;
+  }
+}
+
+@layer components {
+  /* ★ --shadow-panel: the site's standard raised surface. */
+  .panel {
+    @apply rounded-xl border border-slate-200 bg-white shadow-panel;
+  }
+}
+
+@layer utilities {
+  /*
+   * Hero scene — parallax rebuilt from the marketing site's behaviour.
+   * Drive --hero-x / --hero-y / --hero-tilt-x / --hero-tilt-y from pointer
+   * position (see useHeroParallax); every child eases off the same signal.
+   */
+  .hero-scene {
+    --hero-x: 0px;
+    --hero-y: 0px;
+    --hero-tilt-x: 0deg;
+    --hero-tilt-y: 0deg;
+    perspective: 900px;
+    transform-style: preserve-3d;
+    transform: translate(var(--hero-x), var(--hero-y)) rotateX(var(--hero-tilt-x)) rotateY(var(--hero-tilt-y));
+    transition: transform 0.18s ease-out;
+  }
+  .hero-copy {
+    transform: translate(calc(var(--hero-x) * -0.08), calc(var(--hero-y) * -0.08));
+    transition: transform 0.18s ease-out;
+  }
+  .hero-logo {
+    transform: translateZ(64px);
+  }
+  .hero-card-far {
+    transform: translateZ(34px) translate(calc(var(--hero-x) * -0.12), calc(var(--hero-y) * -0.12));
+  }
+  .hero-card-near {
+    transform: translateZ(90px) translate(calc(var(--hero-x) * 0.18), calc(var(--hero-y) * 0.18));
+  }
+
+  /* Forest grid, faded out toward the bottom. */
+  .hero-grid {
+    background-image:
+      linear-gradient(color-mix(in oklab, theme('colors.forest.DEFAULT') 20%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in oklab, theme('colors.forest.DEFAULT') 20%, transparent) 1px, transparent 1px);
+    background-size: 52px 52px;
+    opacity: 0.28;
+    -webkit-mask-image: linear-gradient(#000, transparent 88%);
+    mask-image: linear-gradient(#000, transparent 88%);
+    transform: translate(calc(var(--hero-x) * -0.18), calc(var(--hero-y) * -0.18));
+    transition: transform 0.18s ease-out;
+  }
+
+  /* Gold light sweep across the scene. */
+  .hero-beam {
+    background: linear-gradient(
+      122deg,
+      transparent 42%,
+      color-mix(in oklab, theme('colors.gold.DEFAULT') 14%, transparent) 50%,
+      transparent 58%
+    );
+    transform: translateX(calc(var(--hero-x) * 0.5));
+    transition: transform 0.18s ease-out;
+  }
+
+  /* Dashed rings orbiting the mark. */
+  .hero-halo {
+    @apply animate-halo-spin rounded-full border border-dashed;
+  }
+  .hero-halo-reverse {
+    @apply animate-halo-spin-reverse rounded-full border border-dashed;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-scene,
+    .hero-copy,
+    .hero-grid,
+    .hero-beam,
+    .hero-card-far,
+    .hero-card-near {
+      transform: none;
+      transition: none;
+    }
+    .hero-halo,
+    .hero-halo-reverse {
+      animation: none;
+    }
+  }
 }

@@ -45,8 +45,8 @@ export function AppShell() {
       <div className="flex items-center gap-2 px-5 py-5">
         <img src={`${import.meta.env.BASE_URL}valeur-mark.png`} alt="" className="h-9 w-9 rounded-md" />
         <div>
-          <p className="text-sm font-semibold tracking-wide text-brand-900">VALEUR</p>
-          <p className="text-[11px] text-slate-500">Understand. Resolve. Rebuild.</p>
+          <p className="font-display text-sm font-semibold tracking-wide text-sidebar-foreground">VALEUR</p>
+          <p className="text-[11px] text-sidebar-foreground/60">Understand. Resolve. Rebuild.</p>
         </div>
       </div>
       <ul className="flex-1 space-y-0.5 px-3">
@@ -56,24 +56,26 @@ export function AppShell() {
               to={n.to}
               end={n.to === '/'}
               onClick={() => setOpen(false)}
-              className={({ isActive }) => cn('flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium', isActive ? 'bg-brand-50 text-brand-800' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900')}
+              className={({ isActive }) => cn('flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium', isActive
+                    ? 'bg-sidebar-accent text-accent-500'
+                    : 'text-sidebar-foreground/75 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground')}
             >
               {n.icon}
               <span className="flex-1">{n.label}</span>
-              {n.step && <span className="text-[10px] uppercase tracking-wide text-slate-400">{n.step}</span>}
+              {n.step && <span className="text-[10px] uppercase tracking-wide text-sidebar-foreground/45">{n.step}</span>}
             </NavLink>
           </li>
         ))}
       </ul>
-      <div className="border-t border-slate-100 px-5 py-4">
-        <p className="truncate text-sm font-medium text-slate-800">{profile?.fullName ?? user?.email}</p>
-        <p className="text-xs capitalize text-slate-500">{role}</p>
+      <div className="border-t border-sidebar-border px-5 py-4">
+        <p className="truncate text-sm font-medium text-sidebar-foreground">{profile?.fullName ?? user?.email}</p>
+        <p className="text-xs capitalize text-sidebar-foreground/60">{role}</p>
         <button
           onClick={async () => {
             await authActions.signOut();
             navigate('/login');
           }}
-          className="mt-2 flex items-center gap-2 text-xs text-slate-500 hover:text-slate-800"
+          className="mt-2 flex items-center gap-2 text-xs text-sidebar-foreground/60 hover:text-accent-500"
         >
           <LogOut className="h-3.5 w-3.5" /> Sign out
         </button>
@@ -83,12 +85,12 @@ export function AppShell() {
 
   return (
     <div className="min-h-screen lg:flex">
-      <aside className="hidden w-64 shrink-0 border-r border-slate-200 bg-white lg:block">{Sidebar}</aside>
+      <aside className="hidden w-64 shrink-0 border-r border-sidebar-border bg-sidebar lg:block">{Sidebar}</aside>
       {open && (
         <div className="fixed inset-0 z-40 lg:hidden">
-          <div className="absolute inset-0 bg-slate-900/40" onClick={() => setOpen(false)} />
-          <aside className="absolute inset-y-0 left-0 w-72 bg-white shadow-xl">
-            <button className="absolute right-3 top-4 rounded-md p-1 text-slate-500" onClick={() => setOpen(false)} aria-label="Close menu">
+          <div className="absolute inset-0 bg-forest-deep/50" onClick={() => setOpen(false)} />
+          <aside className="absolute inset-y-0 left-0 w-72 bg-sidebar shadow-xl">
+            <button className="absolute right-3 top-4 rounded-md p-1 text-sidebar-foreground/70 hover:text-sidebar-foreground" onClick={() => setOpen(false)} aria-label="Close menu">
               <X className="h-5 w-5" />
             </button>
             {Sidebar}
@@ -118,7 +120,7 @@ export function AppShell() {
           <button onClick={() => setOpen(true)} className="rounded-md p-1.5 text-slate-600 hover:bg-slate-100" aria-label="Open menu">
             <Menu className="h-5 w-5" />
           </button>
-          <img src={`${import.meta.env.BASE_URL}valeur-mark.png`} alt="" className="h-7 w-7" /><span className="text-sm font-semibold tracking-wide text-brand-900">VALEUR</span>
+          <img src={`${import.meta.env.BASE_URL}valeur-mark.png`} alt="" className="h-7 w-7" /><span className="font-display text-sm font-semibold tracking-wide text-brand-900">VALEUR</span>
         </header>
         {viewingOther && (
           <div className="flex flex-wrap items-center justify-between gap-2 bg-amber-50 px-4 py-2 text-sm text-amber-900 lg:px-8">

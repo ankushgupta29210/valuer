@@ -1,14 +1,28 @@
 import type { ReactNode } from 'react';
+import { useHeroParallax } from '@/lib/useHeroParallax';
 
 export function AuthLayout({ title, subtitle, children }: { title: string; subtitle?: string; children: ReactNode }) {
+  const scene = useHeroParallax<HTMLDivElement>();
+
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-slate-100">
-      <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-4 py-10">
+    <div ref={scene} className="hero-scene relative flex min-h-screen flex-col overflow-hidden bg-slate-50">
+      <div className="hero-grid pointer-events-none absolute inset-0" aria-hidden />
+      <div className="hero-beam pointer-events-none absolute inset-0" aria-hidden />
+
+      <div className="hero-copy relative mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-4 py-10">
         <div className="mb-6 flex flex-col items-center text-center">
-          <img src={`${import.meta.env.BASE_URL}valeur-logo.png`} alt="Valeur — Understand. Resolve. Rebuild." className="w-56 max-w-full" />
+          <div className="relative flex h-64 w-64 items-center justify-center">
+            <span className="hero-halo pointer-events-none absolute inset-0 m-auto h-48 w-48 border-brand-200" aria-hidden />
+            <span className="hero-halo-reverse pointer-events-none absolute inset-0 m-auto h-64 w-64 border-accent-500/30" aria-hidden />
+            <img
+              src={`${import.meta.env.BASE_URL}valeur-logo.png`}
+              alt="Valeur — Understand. Resolve. Rebuild."
+              className="hero-logo relative w-56 max-w-full"
+            />
+          </div>
           <p className="mt-2 text-xs text-slate-500">Clearer credit decisions, one manageable step at a time.</p>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-card sm:p-8">
+        <div className="hero-card-near panel p-6 sm:p-8">
           <h1 className="text-xl">{title}</h1>
           {subtitle && <p className="mt-1 text-sm text-slate-600">{subtitle}</p>}
           <div className="mt-6">{children}</div>
